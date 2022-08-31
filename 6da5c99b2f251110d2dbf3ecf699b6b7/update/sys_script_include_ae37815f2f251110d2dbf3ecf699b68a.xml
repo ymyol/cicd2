@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.testcicd2</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>testcicd2</name>
+        <script><![CDATA[var testcicd2 = Class.create();
+testcicd2.prototype = {
+    initialize: function() {
+    },
+
+    type: 'testcicd2'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-08-31 13:00:17</sys_created_on>
+        <sys_id>ae37815f2f251110d2dbf3ecf699b68a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>testcicd2</sys_name>
+        <sys_package display_value="cicdtest2" source="6da5c99b2f251110d2dbf3ecf699b6b7">6da5c99b2f251110d2dbf3ecf699b6b7</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="cicdtest2">6da5c99b2f251110d2dbf3ecf699b6b7</sys_scope>
+        <sys_update_name>sys_script_include_ae37815f2f251110d2dbf3ecf699b68a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-08-31 13:00:17</sys_updated_on>
+    </sys_script_include>
+</record_update>
