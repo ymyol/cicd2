@@ -46,22 +46,12 @@ jobs:
     
     steps:
 
-      - name: ServiceNow CI/CD Install App
-        id: install_app
-        uses: ServiceNow/sncicd-install-app@2.0.0
-        with:
-          version: ${{ needs.build.outputs.publishversion }}
-          # Only applicable if Application Customization is active. 
-          # Version of the base application on which to apply the customizations
-#          baseAppVersion: '1.2.3'
-          # Only applicable if Application Customization is active and the associated 
-          # application is a higher version than the currently installed version
-          # Default: false
-          autoUpgradeBaseApp: false
+      - name: ServiceNow CI/CD Apply Changes To Test
+        uses: ServiceNow/sncicd-apply-changes@2.0.0
         env:
           nowUsername: ${{ secrets.SN_USERNAME }}
           nowPassword: ${{ secrets.SN_PASSWORD }}
-          nowInstallInstance: ${{ secrets.SN_TEST_INSTANCE }}
+          nowSourceInstance: ${{ secrets.SN_TEST_INSTANCE }}
           appSysID: ${{ secrets.SN_APP_SYSID }}
 
       - name: ServiceNow CI/CD Run ATF Test Suite
@@ -73,49 +63,9 @@ jobs:
           nowPassword: ${{ secrets.SN_PASSWORD }}
           nowInstallInstance: ${{ secrets.SN_TEST_INSTANCE }}
 
-      - name: ServiceNow CI/CD Rollback App
-        if: ${{ failure() && steps.install_app.outputs.rollbackVersion }}
-        uses: ServiceNow/sncicd-rollback-app@2.0.0
-        with:
-          version: ${{steps.install_app.outputs.rollbackVersion}}
-        env:
-          nowUsername: ${{ secrets.SN_USERNAME }}
-          nowPassword: ${{ secrets.SN_PASSWORD }}
-          nowInstallInstance: ${{ secrets.SN_TEST_INSTANCE }}
-          appSysID: ${{ secrets.SN_APP_SYSID }}
-
     # This is required to pass the version number output from Publish App 
     # to the input for Install App in the next job! This is because the jobs 
     # run on different Linux instances, so without this Install App won't know
     # what to install.
     outputs:
       publishversion: ${{ needs.build.outputs.publishversion }}
-
-  deployprod:
-    # Purpose of this job is to Install App to a Prod instance. This should only 
-    # trigger if the feature branch has been merged to master after a successfully 
-    # completed pull request, hence the conditional for push to master. In other words,
-    # the first two jobs run on CI, then all three jobs run on CD. 
-    needs: test
-    name: Deploy to Prod
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-    steps:
-    
-      - name: ServiceNow CI/CD Install App
-        id: install_app_prod
-        uses: ServiceNow/sncicd-install-app@2.0.0
-        with:
-          version: ${{ needs.test.outputs.publishversion }}
-          # Only applicable if Application Customization is active. 
-          # Version of the base application on which to apply the customizations
-#          baseAppVersion: '1.2.3'
-          # Only applicable if Application Customization is active and the associated 
-          # application is a higher version than the currently installed version
-          # Default: false
-#          autoUpgradeBaseApp: true
-        env:
-          nowUsername: ${{ secrets.SN_USERNAME }}
-          nowPassword: ${{ secrets.SN_PASSWORD }}
-          nowInstallInstance: ${{ secrets.SN_PROD_INSTANCE }}
-          appSysID: ${{ secrets.SN_APP_SYSID }}
